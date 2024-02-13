@@ -1,10 +1,9 @@
 package com.example.laza.category;
 
-import com.example.laza.category.dto.CategoryCreateDto;
-import com.example.laza.category.dto.CategoryResponseDto;
-import com.example.laza.category.dto.CategoryReviewsDto;
-import com.example.laza.category.dto.CategoryUpdateDto;
+import com.example.laza.category.dto.*;
+import com.example.laza.category.entity.Brand;
 import com.example.laza.category.entity.Category;
+import com.example.laza.category.entity.Size;
 import com.example.laza.review.ReviewRepository;
 import com.example.laza.review.dto.ReviewCreateDto;
 import com.example.laza.review.entity.Review;
@@ -22,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -141,6 +142,21 @@ public class CategoryService {
             throw new RuntimeException("Error uploading file", e);
         }
         return "success";
+    }
+
+    public List<CategoryResponseDto> search(SearchBrandSizeDto searchBrandSizeDto) {
+
+
+        List<Category> categories = categoryRepository.findByBrandInOrSizeIn(searchBrandSizeDto.getBrands(), searchBrandSizeDto.getSizes())
+                .stream().toList();
+
+        if (categories.isEmpty()) {
+            throw new EntityNotFoundException("category with brand or size not found");
+        }
+
+        return categories.stream()
+                .map(category -> mapper.map(category, CategoryResponseDto.class))
+                .collect(Collectors.toList());
     }
 }
 

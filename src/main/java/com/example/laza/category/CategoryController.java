@@ -1,9 +1,8 @@
 package com.example.laza.category;
 
-import com.example.laza.category.dto.CategoryCreateDto;
-import com.example.laza.category.dto.CategoryResponseDto;
-import com.example.laza.category.dto.CategoryReviewsDto;
-import com.example.laza.category.dto.CategoryUpdateDto;
+import com.example.laza.category.dto.*;
+import com.example.laza.category.entity.Brand;
+import com.example.laza.category.entity.Size;
 import com.example.laza.order.OrderService;
 import com.example.laza.order.dto.OrderCreateDto;
 import com.example.laza.order.dto.OrderResponseDto;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -51,7 +51,6 @@ public class CategoryController {
 
     @PostMapping()
     public ResponseEntity<CategoryResponseDto> create(@RequestBody @Valid CategoryCreateDto createDto) {
-
         CategoryResponseDto categoryResponseDto = service.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryResponseDto);
     }
@@ -66,6 +65,14 @@ public class CategoryController {
     public ResponseEntity<OrderResponseDto> addToCart(@PathVariable Integer userId, @RequestBody @Valid OrderCreateDto orderCreateDto) {
         OrderResponseDto orderResponseDto = orderService.create(userId, orderCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDto);
+    }
+
+    @PostMapping("/search/category-brand-size")
+    public ResponseEntity<List<CategoryResponseDto>> search(@RequestBody SearchBrandSizeDto searchBrandSizeDto) {
+
+        List<CategoryResponseDto> categoryResponseDto = service.search(searchBrandSizeDto);
+
+        return ResponseEntity.ok(categoryResponseDto);
     }
 
     @GetMapping()
