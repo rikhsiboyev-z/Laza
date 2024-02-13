@@ -16,6 +16,7 @@ import com.example.laza.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,6 +44,11 @@ public class UserService implements UserDetailsService {
     private final OTPRepository otpRepository;
     private final AddressRepository addressRepository;
     private final PaymentRepository paymentRepository;
+
+    @Value("${smtp.gmail.username}")
+    private String username;
+    @Value("${smtp.gmail.password}")
+    private String password;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -101,8 +107,6 @@ public class UserService implements UserDetailsService {
     private void sendEmail(String recipientEmail, User user) {
         String host = "smtp.gmail.com";
         String port = "587";
-        String username = "rikhsiboyevzaxa@gmail.com";
-        String password = "duhd sbzo hpxn fkkg";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
